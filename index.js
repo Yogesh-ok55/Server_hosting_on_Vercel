@@ -1,15 +1,21 @@
 const express = require("express");
 const app = express();
 
+let visitCount = 0;
+
 app.get("/", (req, res) => {
+    visitCount++;
+
     const now = new Date();
     const seconds = now.getSeconds();
 
-    // secret winning number (do NOT disclose to the user)
+    // We show this to user (but do NOT reveal why)
+    const displayNumber = seconds % 60;
+
+    // Hidden win rule
     const winNumber = Math.floor(Math.random() * 60);
 
-    // check win
-    const isWinner = (seconds % 60) === winNumber;
+    const isWinner = displayNumber === winNumber;
 
     let message = "";
     let animation = "";
@@ -52,7 +58,6 @@ app.get("/", (req, res) => {
                     to { opacity: 1; }
                 }
 
-                /* Win Pulse */
                 .pulse {
                     width: 50px;
                     height: 50px;
@@ -67,7 +72,6 @@ app.get("/", (req, res) => {
                     100% { transform: scale(1.3); opacity: 1; }
                 }
 
-                /* Lose Shake */
                 .shake {
                     width: 50px;
                     height: 50px;
@@ -83,6 +87,19 @@ app.get("/", (req, res) => {
                     50% { transform: translateX(5px); }
                     75% { transform: translateX(-5px); }
                     100% { transform: translateX(0); }
+                }
+
+                .visits {
+                    margin-top: 25px;
+                    font-size: 22px;
+                    color: #0066cc;
+                }
+
+                .number {
+                    margin-top: 15px;
+                    font-size: 24px;
+                    font-weight: bold;
+                    color: purple;
                 }
 
                 .note {
@@ -104,9 +121,15 @@ app.get("/", (req, res) => {
             ${message}
             ${animation}
 
+            <p class="visits">👀 Total Visits: <b>${visitCount}</b></p>
+
+            <p class="number">
+                🔢 Your Lucky Number: <b>${displayNumber}</b>
+            </p>
+
             <p class="note">
                 🔔 Winning chance is <b>1/60</b>.<br>
-                And if you win once… you actually have a higher chance to win again 😉
+                And if you win once… your chances get even stronger 😉
             </p>
 
             <p class="decode">
